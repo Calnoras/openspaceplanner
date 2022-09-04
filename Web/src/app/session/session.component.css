@@ -85,6 +85,10 @@ h1 .edit-button {
     float: left;
 }
 
-.calendar-button {
+.floated-right {
     float: right;
+}
+
+.pad-right {
+    padding-right: 5px;
 }

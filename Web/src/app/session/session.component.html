@@ -9,9 +9,15 @@
         </a>
     </h1>
 
-    <a class="calendar-button" href="/api/sessions/{{session.id}}/calendar">
-        <span class="fa fa-calendar fa-2x"></span>
-    </a>
+    <div class="floated-right">
+        <a class="export-feedback-button" href="/api/sessions/{{session.id}}/export/feedback">
+            <span class="fa fa-download fa-2x pad-right"></span>
+        </a>
+
+        <a class="calendar-button" href="/api/sessions/{{session.id}}/calendar">
+            <span class="fa fa-calendar fa-2x"></span>
+        </a>
+    </div>
 
     <table class="table session-table is-striped is-fullwidth is-hoverable">
         <thead>
@@ -41,7 +47,7 @@
                 <ng-container *ngFor="let topic of topics[slot.id]">
                     <td *ngIf="topic != null" class="table-cell dropable topic-space" [attr.rowspan]="topic.slots" [attr.data-slot-id]="topic.slotId" [attr.data-room-id]="topic.roomId">
                         <app-session-topic-box *ngIf="topic.id != null" [topic]="topic" (edit)="showModal($event, 'topic', $event.topic)"
-                            (dblclick)="showModal($event, 'topic', topic)">
+                                               (dblclick)="showModal($event, 'topic', topic)">
                         </app-session-topic-box>
                     </td>
                 </ng-container>
@@ -51,7 +57,7 @@
 
     <div class="topics-unassigned dropable" [hidden]="unassignedTopics.length === 0">
         <app-session-topic-box *ngFor="let topic of unassignedTopics" [topic]="topic" (dblclick)="showModal($event, 'topic', topic)"
-            (edit)="showModal($event, 'topic', $event.topic)"></app-session-topic-box>
+                               (edit)="showModal($event, 'topic', $event.topic)"></app-session-topic-box>
     </div>
 </div>
 
@@ -60,6 +66,7 @@
 </button>
 
 <ul *ngIf="floatingActionButton.expanded" class="is-floating-button-submenu">
+
     <li>
         <button (click)="showModal($event, 'topic', {});" class="button is-info is-floating-button">
             <span class="fa fa-calendar"></span>
