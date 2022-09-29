@@ -9,6 +9,7 @@ using openspace.DataAccess.Configurations;
 using openspace.DataAccess.Repositories;
 using openspace.Domain.Services;
 using openspace.Web.Hubs;
+using openspace.Web.Services;
 using System;
 using System.IO;
 using System.Net.Http;
@@ -101,6 +102,9 @@ namespace openspace
 
             services.AddSingleton<ICalendarService>(provider
                 => new CalendarService(provider.GetService<ISessionRepository>(), Configuration["Timezone"] ?? "Europe/Berlin"));
+
+            services.AddSingleton<IExportService>(provider
+                => new ExportService());
         }
     }
 }

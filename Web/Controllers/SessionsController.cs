@@ -4,10 +4,9 @@ using openspace.Common.Entities;
 using openspace.DataAccess.Repositories;
 using openspace.Domain.Services;
 using openspace.Web.Hubs;
-using System;
+using openspace.Web.Services;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace openspace.Web.Controllers
@@ -18,12 +17,14 @@ namespace openspace.Web.Controllers
         private readonly ICalendarService _calendarService;
         private readonly ISessionRepository _sessionRepository;
         private readonly IHubContext<SessionsHub, ISessionsHub> _sessionsHub;
+        private readonly IExportService _exportService;
 
-        public SessionsController(ISessionRepository sessionRepository, ICalendarService calendarService, IHubContext<SessionsHub, ISessionsHub> sessionsHub)
+        public SessionsController(ISessionRepository sessionRepository, ICalendarService calendarService, IHubContext<SessionsHub, ISessionsHub> sessionsHub, IExportService exportService)
         {
             _sessionRepository = sessionRepository;
             _calendarService = calendarService;
             _sessionsHub = sessionsHub;
+            _exportService = exportService;
         }
 
         [HttpDelete("{id}")]
@@ -109,24 +110,9 @@ namespace openspace.Web.Controllers
         [HttpGet("{id}/export/feedback")]
         public async Task<ActionResult> ExportFeedback(int id)
         {
-           var session = await _sessionRepository.Get(id);
-            var topics = session.Topics;
-            var csvBuilder = new StringBuilder();
-            foreach (var topic in topics)
-            {
-                foreach (var f in topic.Feedback)
-                {
-                    csvBuilder.AppendLine($"{topic.Name};{f.Value.ToString()};");
-                    
-                }
-                foreach (var t in topic.Ratings)
-                {
-                    csvBuilder.AppendLine($"{topic.Name};;{t.Value.ToString()}");
-                }
-                
-            }
+            var session = await _sessionRepository.Get(id);
             Response.Headers["Content-Disposition"] = $"attachment; filename=\"{session.Name}{session.Id}Feedback.csv\"";
-            return Content(csvBuilder.ToString(), "text/feedback");
+            return Content(_exportService.GetSessionAsCsv(session), "text/feedback");
         }
     }
 }
